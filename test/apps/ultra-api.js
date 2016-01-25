@@ -7,8 +7,7 @@ var ipcApiStream = require('../../src/ipc-api-stream')
 
 const IPC_MANIFEST = {
   registerService: 'sync',
-  queryServices: 'sync',
-  log: 'sync'
+  queryServices: 'sync'
 }
 
 // was this process started by ultra?

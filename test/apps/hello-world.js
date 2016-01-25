@@ -6,14 +6,14 @@ var ultra = require('./ultra-api')
 var port = process.env.PORT
 
 // create the HTTP server
-ultra.log('listening at port', port)
+console.log('listening at port', port)
 http.createServer(function (req, res) {
   res.writeHead(200, 'Ok', { 'Content-Type': 'text/html' })
   res.end('Hello, world')
 }).listen(port)
 
 
-ultra.log('registering')
+console.log('registering')
 if (ultra.isActive()) {
   // register the http server with ultra
   ultra.registerService({

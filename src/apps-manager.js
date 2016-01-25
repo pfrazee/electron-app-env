@@ -19,10 +19,9 @@ else {
 
 const IPC_MANIFEST = {
   registerService: 'sync',
-  queryServices: 'sync',
-  log: 'sync'
+  queryServices: 'sync'
 }
-const IPC_API = { registerService, queryServices, log }
+const IPC_API = { registerService, queryServices }
 const NotYetImplementedError = zerr('NotYetImplemented')
 
 // what's the first port we'll assign?
@@ -60,7 +59,7 @@ module.exports.spawn = function (path) {
 
   // spawn the process
   var childProcessInstance = childProcess.spawn(NODE_PATH, [path], {
-    stdio: [null, null, null, 'ipc'],
+    stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
     cwd: pathlib.dirname(path),
     env: {
       PORT: port
@@ -161,7 +160,3 @@ function queryServices (opts) {
   throw new NotYetImplementedError()
 }
 module.exports.queryServices = queryServices
-
-function log (...args) {
-  // console.log.apply(console, [this.id.port].concat(args))
-}
