@@ -7,7 +7,7 @@ A typical application:
 
 ```js
 var http = require('http')
-var ultra = require('ultra-api')
+var ultra = require('./ultra-api')
 
 // read config from env vars
 var port = process.env.PORT
@@ -18,19 +18,16 @@ http.createServer(function (req, res) {
   res.end('Hello, world')
 }).listen(port)
 
-// wait for the ultra IPC interface to be ready
-// (if the app isnt executed by ultra, this event will never fire)
-ultra.on('ready', function () {
-
+if (ultra.isActive()) {
   // register the http server with ultra
   ultra.registerService({
     title: 'Hello World Application',
-    hostname: 'helloworld'
+    hostname: 'helloworld',
     port: port,
     protocols: ['http'],
     interfaces: ['page']
   })
-})
+}
 ```
 
 ## Overview
