@@ -1,0 +1,12 @@
+{
+  "name": "ultra",
+  "productName": "Ultra",
+  "identifier": "com.ssbc.ultra",
+  "description": "desktop applications platform powered by electron",
+  "author": "Paul Frazee <pfrazee@gmail.com>",
+  "copyright": "© 2016, Secure Scuttlebutt Consortium",
+  "license": "?",
+  "main": "index.js",
+  "dependencies": {
+  }
+}
