@@ -1,8 +1,7 @@
 Ultra
 =====
 
-Ultra is an experimental applications environment built on Electron.
-It upgrades node web-apps into integrated desktop apps.
+Ultra is an experimental browsing environment built on Electron.
 
 A typical application:
 
@@ -26,7 +25,7 @@ ultra.on('ready', function () {
   // register the http server with ultra
   ultra.registerService({
     title: 'Hello World Application',
-    appId: 'helloworld'
+    hostname: 'helloworld'
     port: port,
     protocols: ['http'],
     interfaces: ['page']
