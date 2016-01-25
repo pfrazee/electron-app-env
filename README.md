@@ -7,7 +7,7 @@ A typical application:
 
 ```js
 var http = require('http')
-var ultra = require('ultra-ipc')
+var ultra = require('ultra-api')
 
 // read config from env vars
 var port = process.env.PORT
