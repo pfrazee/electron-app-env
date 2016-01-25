@@ -9,7 +9,7 @@ var port = process.env.PORT
 console.log('listening at port', port)
 http.createServer(function (req, res) {
   res.writeHead(200, 'Ok', { 'Content-Type': 'text/html' })
-  res.end('Hello, world')
+  res.end('<html><head><title>Hello World Application</title></head><body>Hello, world</body></html>')
 }).listen(port)
 
 

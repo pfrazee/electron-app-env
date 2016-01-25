@@ -35,6 +35,7 @@ function unref () {
 
 function create (opts) {
   opts = extend({
+    title: 'Ultra',
     width: 1024,
     height: 768,
     webPreferences: webPreferences
