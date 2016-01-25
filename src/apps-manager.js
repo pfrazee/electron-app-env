@@ -40,9 +40,9 @@ var portRegistry = {}
 var serviceList = []
 module.exports.getServiceList = () => serviceList
 
-// hostname assingments, map of hostname -> [list of service-objects]
-var hostnameRegistry = {}
-module.getHostnameRegistry = () => hostnameRegistry
+// appname assingments, map of appname -> [list of service-objects]
+var appnameRegistry = {}
+module.getappnameRegistry = () => appnameRegistry
 
 // finds a port range that's not allocated yet
 function getFreePortRange () {
@@ -77,7 +77,7 @@ module.exports.spawn = function (path) {
     process: childProcessInstance,
     ipcStream: ipcStream,
     ipcApi: ipcApi,
-    hostnames: [],
+    appnames: [],
     state: { isAlive: true, code: null, signal: null }
   }
   apps.push(app)
@@ -101,8 +101,8 @@ module.exports.spawn = function (path) {
     // remove from registries
     delete portRegistry[port]
     serviceList = serviceList.filter(service => service.port !== app.port)
-    app.hostnames.forEach(hostname => {
-      hostnameRegistry = hostnameRegistry[hostname].filter(service => service.port !== app.port)
+    app.appnames.forEach(appname => {
+      appnameRegistry = appnameRegistry[appname].filter(service => service.port !== app.port)
     })
 
     // break recursive reference
@@ -119,15 +119,15 @@ module.exports.protocolHandler = function (req, cb) {
   const urlParsed = url.parse(req.url)
 
   // lookup the services
-  var services = hostnameRegistry[urlParsed.hostname]
-  // console.log(urlParsed.hostname, services, hostnameRegistry)
+  var services = appnameRegistry[urlParsed.hostname]
+  // console.log(urlParsed.hostname, services, appnameRegistry)
 
   // 404?
   if (!services || services.length === 0) {
     return cb({ url: 'http://localhost:9999/not-found', method: 'get' })
   }
 
-  // TODO handle condition where services.length > 1 (multiple registered hostnames for one id)
+  // TODO handle condition where services.length > 1 (multiple registered appnames for one id)
   cb({
     url: 'http://localhost:'+services[0].port,
     method: req.method
@@ -143,14 +143,14 @@ function registerService (service) {
   // add to main listing
   serviceList.push(service)
 
-  if (service.hostname) {
+  if (service.appname) {
     // track the app id registry in the app object, to help with cleanup
     if (service.isApp)
-      this.id.hostnames.push(service.hostname)
+      this.id.appnames.push(service.appname)
 
     // add to the registry
-    hostnameRegistry[service.hostname] = hostnameRegistry[service.hostname] || []
-    hostnameRegistry[service.hostname].push(service)
+    appnameRegistry[service.appname] = appnameRegistry[service.appname] || []
+    appnameRegistry[service.appname].push(service)
   }
 }
 module.exports.registerService = registerService

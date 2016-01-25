@@ -18,7 +18,7 @@ if (ultra.isActive()) {
   // register the http server with ultra
   ultra.registerService({
     title: 'Hello World Application',
-    hostname: 'helloworld',
+    appname: 'helloworld',
     port: port,
     protocols: ['http'],
     interfaces: ['page']

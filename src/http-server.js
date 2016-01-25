@@ -14,7 +14,7 @@ module.exports = function (req, res) {
     res.write(
       services
         .filter(service => service.isApp)
-        .map(service => `<li><a href="app:${service.hostname}">${service.title}</a></li>`).join('')
+        .map(service => `<li><a href="app:${service.appname}">${service.title}</a></li>`).join('')
     )
     res.write(`</ul>`)
     res.end()

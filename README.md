@@ -7,7 +7,7 @@ A typical application:
 
 ```js
 var http = require('http')
-var ultra = require('./ultra-api')
+var ultra = require('ultra-api')
 
 // read config from env vars
 var port = process.env.PORT
@@ -22,7 +22,7 @@ if (ultra.isActive()) {
   // register the http server with ultra
   ultra.registerService({
     title: 'Hello World Application',
-    hostname: 'helloworld',
+    appname: 'helloworld',
     port: port,
     protocols: ['http'],
     interfaces: ['page']

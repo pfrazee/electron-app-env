@@ -27,7 +27,7 @@ electron.app.on('ready', function() {
     // register core services
     appsManager.registerService({
       title: 'Ultra Launcher',
-      hostname: 'launch',
+      appname: 'launch',
       port: 9999,
       protocols: ['http'],
       interfaces: ['page']
