@@ -3,10 +3,19 @@
 var childProcess = require('child_process')
 var pathlib = require('path')
 var url = require('url')
+var which = require('which')
 var ipcApiStream = require('./ipc-api-stream')
 var muxrpc = require('muxrpc')
 var pull = require('pull-stream')
 var zerr = require('zerr')
+
+const NODE_PATH = which.sync('node')
+if (NODE_PATH)
+  console.log('Node path:', NODE_PATH)
+else {
+  console.error('Node not found on this system. Please install the latest nodejs.')
+  process.exit(1)
+}
 
 const IPC_MANIFEST = {
   registerService: 'sync',
@@ -50,8 +59,7 @@ module.exports.spawn = function (path) {
   var port = getFreePortRange()
 
   // spawn the process
-  // TODO execPath gives electron, we want the node path
-  var childProcessInstance = childProcess.spawn(process.execPath, [path], {
+  var childProcessInstance = childProcess.spawn(NODE_PATH, [path], {
     stdio: [null, null, null, 'ipc'],
     cwd: pathlib.dirname(path),
     env: {
