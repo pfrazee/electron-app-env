@@ -1,7 +1,8 @@
 Ultra
 =====
 
-Ultra is an experimental browsing environment built on Electron.
+Ultra is an experimental application environment built on [Electron](http://electron.atom.io/).
+It is effectively a browser that runs web-servers for the local user.
 
 A typical application:
 
@@ -32,8 +33,8 @@ if (ultra.isActive()) {
 
 ## Overview
 
-Ultra is effectively a browser that runs web-servers for the local user.
-It manages configuration, server lifecycle, and the browser windows.
+Ultra is chromium + server orchestration.
+It manages configuration, server-app lifecycle, and the browser windows.
 This leaves the applications to behave like typical node web-apps, with a few extra APIs for working with the environment.
 
 ### App Lifecycle & Config
@@ -94,9 +95,7 @@ Each window is free-standing, as you'd expect on the desktop.
 
 Some applications are included with Ultra, by default, and cannot be overridden by userland.
 
-`app:launcher` provides the standard open-window interface.
-
-`app:config` provides configuration tools. 
+`app:launch` provides the standard open-window interface.
 
 ### Security & Sandboxing
 
