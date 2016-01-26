@@ -8,8 +8,7 @@
     "gulp-util": "^3.0.6",
     "q": "^1.4.1",
     "rollup": "^0.21.0",
-    "tree-kill": "^0.1.1",
-    "yargs": "^3.15.0"
+    "tree-kill": "^0.1.1"
   },
   "optionalDependencies": {
     "appdmg": "^0.3.2",
@@ -28,6 +27,7 @@
     "pull-stream": "^3.1.0",
     "which": "^1.2.2",
     "xtend": "^4.0.1",
+    "yargs": "^3.15.0",
     "zerr": "^1.0.3"
   }
 }

@@ -1,6 +1,6 @@
 'use strict'
 var http = require('http')
-var ultra = require('./ultra-api')
+var ultra = require('../ultra-api')
 
 // read config from env vars
 var port = process.env.PORT

@@ -34,8 +34,12 @@ electron.app.on('ready', function() {
     })
 
     // start applications
-    // DEBUG spawn hello world
-    appsManager.spawn(path.join(__dirname, '../test/apps/hello-world.js'))
+    var appsDirectory = require('./apps-directory')(config.getAppsPath())
+    appsDirectory.getAppFolders().forEach(app => {
+      // spawn each app
+      appsManager.spawn(path.join(app.folderPath, 'index.js'))
+    })
+    // TODO listen for new apps
 
     // register app: protocol
     electron.protocol.registerHttpProtocol('app', appsManager.protocolHandler, function (err) {

@@ -129,6 +129,10 @@ npm install
 npm start
 ```
 
+### Testing
+
+If you run using `npm test` instead of `npm start`, Ultra will load using `./test/apps` as its apps path.
+
 ### Building into a platform-specific program
 
 ```
@@ -139,6 +143,15 @@ npm run release
 
 This repo is based on https://github.com/szwacz/electron-boilerplate.
 Check that repo to get more information on the structure and scripts.
+
+
+## Howto Write an App
+
+Refer to [test/apps/hello-world](./test/apps/hello-world) for help.
+
+Create a standard node project, with a `package.json` and `index.js`.
+In the `package.json`, include an "ultra" attribute at the toplevel.
+For now, it's value just needs to be truthy.
 
 
 ## API

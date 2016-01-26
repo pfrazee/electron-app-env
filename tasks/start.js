@@ -3,7 +3,7 @@
 var electron = require('electron-prebuilt');
 var childProcess = require('child_process');
 
-var app = childProcess.spawn(electron, ['./src'], {
+var app = childProcess.spawn(electron, ['./src'].concat(process.argv.slice(2)), {
     stdio: 'inherit'
 })
 
