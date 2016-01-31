@@ -1,6 +1,6 @@
 'use strict'
 var http = require('http')
-var ultra = require('../ultra-api')
+var eappenv = require('eappenv')
 
 // read config from env vars
 var port = process.env.PORT
@@ -13,10 +13,9 @@ http.createServer(function (req, res) {
 }).listen(port)
 
 
-console.log('registering')
-if (ultra.isActive()) {
+if (eappenv.isActive()) {
   // register the http server with ultra
-  ultra.registerService({
+  eappenv.registerService({
     title: 'Hello World Application',
     appname: 'helloworld',
     port: port,
