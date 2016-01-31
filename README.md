@@ -7,9 +7,9 @@ It's not yet complete.
 
 A typical application:
 
+`index.js`
 ```js
 var http = require('http')
-var appenv = require('eappenv')
 
 // read config from env vars
 var port = process.env.PORT
@@ -19,30 +19,34 @@ http.createServer(function (req, res) {
   res.writeHead(200, 'Ok', { 'Content-Type': 'text/html' })
   res.end('Hello, world')
 }).listen(port)
+```
 
-if (appenv.isActive()) {
-  // register the http server for other apps to find
-  appenv.registerService({
-    title: 'Hello World Application',
-    appname: 'helloworld',
-    port: port,
-    protocols: ['http'],
-    interfaces: ['page']
-  })
+`manifest.json`
+```json
+{
+  "name": "Hello World Application",
+  "short_name": "HW App",
+  "related_applications": [{
+    "platform": "eappenv",
+    "url": "https://github.com/bob/helloworld",
+    "id": "helloworld"
+  }]
 }
 ```
+
+The manifest is an extension of the [Web App Manifest](https://developer.mozilla.org/en-US/docs/Web/Manifest).
 
 ## Overview
 
 EAppEnv is chromium + server orchestration.
 It manages configuration, server-app lifecycle, and the browser windows.
-This leaves the applications to behave like typical node web-apps, with a few extra APIs for working with the environment.
+This leaves the applications to behave like typical node web-apps, on the desktop.
 
 ### App Lifecycle & Config
 
 EAppEnv orchestrates the applications so they can depend on each other.
 It runs them in child processes, and passes config via environment variables.
-It also establishes an IPC interface using [node's stdio api](https://nodejs.org/api/child_process.html#child_process_options_stdio).
+It also establishes an IPC interface using [node's stdio api](https://nodejs.org/api/child_process.html#child_process_options_stdio), which is what powers the `eappenv` api.
 
 ### Service Registry
 
@@ -55,13 +59,13 @@ It lets applications depend on each other, and avoid duplicated functionality.
 
 ### URL Scheme
 
-EAppEnvu introduces the `app:` scheme using [electron's protocol api](http://electron.atom.io/docs/v0.36.5/api/protocol/).
-This scheme integrates with EAppEnv's service-registry to route requests to the active applications.
+EAppEnv introduces the `app:` scheme using [electron's protocol api](http://electron.atom.io/docs/v0.36.5/api/protocol/).
+This scheme integrates with EAppEnv's app-registry to route requests to the active applications.
 
 The scheme is very simple:
 
 ```
-app-url        = "app:" <app-identifier> "/" <path>
+app-url        = "app:" <app-id> "/" <path>
 app-identifier = [A-z0-9-._]+
 path           = [A-z0-9-._~:/?#[]@!$&'()*+,;=]*
 ```
@@ -74,23 +78,22 @@ app:mail/compose
 app:mail/view/%258gV+3yzSEUiWulnOq7aUiNMD1ckGICjPumWw8m5SG38=.sha256
 ````
 
-A request to `app:notifications` would look in the service-registry for the `appId` of `notifications`.
+A request to `app:notifications` would look in the manifests of active apps for the `related_applications[eappenvI].id` of `notifications`.
 If an entry is found, the request would be routed to that service (eg to `localhost:9999`).
 
-Some notes about how these URLs are used:
- - The URLs are expected to point to interfaces. They are *always* redirected to an `http://localhost:<port>` address. Therefore, they should only be expected to be used as GET endpoints for HTML pages.
- - Applications can share identifiers. If there's a collision, the user's asked which application they want to use when they click on a link.
+Some notes about how these URLs work:
+ - The URLs are generally expected to serve HTML pages, but can support other behaviors as well.
+ - They are *always* served by an `http://localhost:<port>` address.
+ - Services can share an id. If that happens, the user's asked which application they want to use when they click on a link.
 
 ### UI
 
-Like any browser, EAppEnv creates and manages [BrowserWindows](http://electron.atom.io/docs/v0.36.5/api/browser-window/) on behalf of the apps.
-The `BrowserWindow` is created without node integration.
+EAppEnv creates and manages the windows.
+The `BrowserWindow` is created with typical web security, no browser plugin-support, and no node integration.
 Therefore the application frontends behave mostly like in typical Web apps.
 
-One crucial difference is, EAppEnv's windows have no "chrome" - no tabs or address bar.
-Each window is free-standing, as you'd expect on the desktop.
-
-(In the future, EAppEnv may add window-management behaviors, such as tiling and "tabs.")
+The [manifest `display` attr](https://developer.mozilla.org/en-US/docs/Web/Manifest#display) and `eappenv` api will control the decoration of the windows.
+EAppEnv adds `frameless` to create a window with no browsing or OS chrome.
 
 ### Default Applications
 
@@ -102,9 +105,7 @@ Some applications are included with EAppEnv, by default, and cannot be overridde
 
 EAppEnv's `BrowserWindow` will be sandboxed with standard web-security.
 
-Unfortunately, we don't have a node sandbox tool at our disposal yet, and so the backend process is given full access to node APIs.
-This will have to be a temporary condition!
-Once a backend sandbox is available, EAppEnv will be able to install apps much more freely, and better protect users, which is always a good thing.
+Unfortunately, we don't have a node sandbox tool at our disposal yet, and so the backend process is given full access to node APIs, as a regular process.
 
 ### Web / EAppEnv Portability
 
@@ -162,5 +163,5 @@ The `eappenv` provides a set of methods for interacting with EAppEnv from the ap
 
 ### queryServices(opts)
 
-### "ready" event
+### openWindow(opts)
 
