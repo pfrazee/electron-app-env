@@ -1,0 +1,9 @@
+{
+  "name": "Hello World Application",
+  "short_name": "HW App",
+  "related_applications": [{
+    "platform": "eappenv",
+    "url": "https://github.com/bob/helloworld",
+    "id": "helloworld"
+  }]
+}
