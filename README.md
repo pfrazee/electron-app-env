@@ -1,8 +1,7 @@
 Electron App Env
 =====
 
-This is an experimental application environment built on [Electron](http://electron.atom.io/).
-It's a browser that runs web-servers.
+This is a browser that runs web-servers on the device.
 It's not yet complete.
 
 A typical application:
@@ -10,6 +9,7 @@ A typical application:
 `index.js`
 ```js
 var http = require('http')
+var eappenv = require('eappenv')
 
 // read config from env vars
 var port = process.env.PORT
@@ -19,18 +19,24 @@ http.createServer(function (req, res) {
   res.writeHead(200, 'Ok', { 'Content-Type': 'text/html' })
   res.end('Hello, world')
 }).listen(port)
+
+// register the service with eappenv
+eappenv.registerService({
+  title: 'Hello World Application',
+  appname: 'helloworld',
+  port: port,
+  protocols: ['http'],
+  interfaces: ['page']
+})
 ```
 
 `manifest.json`
 ```json
 {
+  "id": "helloworld",
   "name": "Hello World Application",
   "short_name": "HW App",
-  "related_applications": [{
-    "platform": "eappenv",
-    "url": "https://github.com/bob/helloworld",
-    "id": "helloworld"
-  }]
+  "display": "standalone"
 }
 ```
 
@@ -38,9 +44,33 @@ The manifest is an extension of the [Web App Manifest](https://developer.mozilla
 
 ## Overview
 
-EAppEnv is chromium + server orchestration.
-It manages configuration, server-app lifecycle, and the browser windows.
-This leaves the applications to behave like typical node web-apps, on the desktop.
+Motivation: there's a [community](https://github.com/ssbc) of developers who want to create desktop apps using web tech.
+These apps need to provide & share services, and be convenient to access.
+
+EAppEnv is like Chrome Apps, but for Electron and Node.
+It manages configuration, app lifecycle, and inter-app communication, and provides a unified experience (such as via its launcher).
+
+So, EAppEnv handles:
+ - Port assignment and other config
+ - A service registry, to discover other applications on the device
+ - App/server lifecycle, so users aren't having to manage daemons
+ - The UI Windows and overall user experience
+ - The electron runtime, so you dont have to bundle it with your app
+
+And, in the future, it may also do:
+ - Secret/credential management
+ - Backend sandboxing
+ - Automatic updating of applications
+
+### How apps use it
+
+A node app adds a `manifest.json`, for EAppEnv to read its basic settings.
+The user installs the app by putting it in EAppEnv's applications directory.
+After that, it will be run automatically and appear in the launcher.
+
+Config (such as port assignment) is given to the app via ENV vars.
+The app can also register with a service registry, using an STDIO IPC channel to EAppEnv, but this is optional.
+The service registry assists discovery; for instance, an application that wrapped SQLite might register itself here as a SQL service.
 
 ### App Lifecycle & Config
 
@@ -65,7 +95,7 @@ This scheme integrates with EAppEnv's app-registry to route requests to the acti
 The scheme is very simple:
 
 ```
-app-url        = "app:" <app-id> "/" <path>
+app-url        = "app:" <appname> "/" <path>
 app-identifier = [A-z0-9-._]+
 path           = [A-z0-9-._~:/?#[]@!$&'()*+,;=]*
 ```
